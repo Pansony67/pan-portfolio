@@ -1,123 +1,141 @@
-// src/components/BootGreeting.tsx
+// src/components/BootGreetingGate.tsx
 "use client";
 
-import Image from "next/image";
-import { useEffect, useReducer } from "react";
-import { DIALOGUE } from "@/data/dialogue";
+import { useEffect, useRef, useState } from "react";
+import BootGreeting from "@/components/BootGreeting";
+import LoadingScreen from "@/components/LoadingScreen";
+import PixelTransition from "@/components/PixelTransition";
+import { useMusic } from "@/components/MusicProvider";
 
-const TYPE_SPEED_MS = 28;
+// Assets to preload during the transition FROM the dialogue INTO the real
+// site. These specific files are already on screen during the greeting
+// (so this list will usually resolve almost instantly, from cache) - the
+// point of keeping it here is so it's easy to extend: as heavier assets
+// get added to the Title Screen or other pages later, add their paths
+// below and this loading screen will start actually waiting on them.
+const ASSETS_TO_PRELOAD = [
+  "/videos/space-apartment-bg-loop.mp4",
+  "/images/character-standing.png",
+  "/images/dialogue-textbox.png",
+  "/images/dialogue-poses/zero-coffee.png",
+  "/images/dialogue-poses/first-shock.png",
+  "/images/dialogue-poses/second-wave.png",
+  "/images/dialogue-poses/third-happy.png",
+  "/images/dialogue-poses/fourth-whisper.png",
+  "/images/dialogue-poses/fifth-byebye.png",
+  "/images/dialogue-poses/six-nervous.png",
+];
 
-type State = { stepIndex: number; charIndex: number };
-type Action = { type: "TICK" } | { type: "COMPLETE_LINE" } | { type: "ADVANCE" };
+// Once assets actually finish loading, hold the screen at 100% for at
+// least this long before moving on. The progress bar itself never lies -
+// it always tracks real load progress - this just stops a fast connection
+// from making the loading screen flash by before it's even readable.
+const MIN_LOADING_MS = 2600;
 
-function reducer(state: State, action: Action): State {
-  const text = DIALOGUE[state.stepIndex].text;
-  switch (action.type) {
-    case "TICK": {
-      if (state.charIndex >= text.length) return state;
-      return { ...state, charIndex: state.charIndex + 1 };
-    }
-    case "COMPLETE_LINE": {
-      if (state.charIndex >= text.length) return state;
-      return { ...state, charIndex: text.length };
-    }
-    case "ADVANCE": {
-      if (state.stepIndex >= DIALOGUE.length - 1) return state;
-      return { stepIndex: state.stepIndex + 1, charIndex: 0 };
-    }
-  }
-}
+// greeting -> loading -> done, with a pixel-wipe transition bridging each
+// hop: cover the screen, swap what's underneath, then reveal it.
+type Phase = "greeting" | "loading" | "done";
+type TransitionStage = "none" | "covering" | "revealing";
 
-export default function BootGreeting({ onComplete }: { onComplete: () => void }) {
-  const [state, dispatch] = useReducer(reducer, { stepIndex: 0, charIndex: 0 });
-  const step = DIALOGUE[state.stepIndex];
-  const isTyping = state.charIndex < step.text.length;
-  const isLastLine = state.stepIndex === DIALOGUE.length - 1;
+// Module-level, not localStorage/sessionStorage on purpose: it resets on
+// every fresh page load/refresh (so the greeting still plays "every time
+// you enter the site" the way it always has), but stays true across
+// client-side nav within the same load - so clicking "Title Screen" from
+// elsewhere in the nav doesn't replay the whole boot sequence.
+let hasPlayedThisLoad = false;
+
+export default function BootGreetingGate() {
+  const [phase, setPhase] = useState<Phase>(
+    hasPlayedThisLoad ? "done" : "greeting",
+  );
+  const [transitionStage, setTransitionStage] =
+    useState<TransitionStage>("none");
+  const [progress, setProgress] = useState(0);
+  const pendingPhaseRef = useRef<Phase | null>(null);
+  const { setGateOpen } = useMusic();
 
   useEffect(() => {
-    const id = setInterval(() => dispatch({ type: "TICK" }), TYPE_SPEED_MS);
-    return () => clearInterval(id);
-  }, [state.stepIndex]);
+    hasPlayedThisLoad = true;
+  }, []);
 
-  function handleAdvance() {
-    if (isTyping) {
-      dispatch({ type: "COMPLETE_LINE" });
-      return;
-    }
-    if (isLastLine) {
-      onComplete();
-      return;
-    }
-    dispatch({ type: "ADVANCE" });
+  // Background music stays silent for the whole greeting + loading
+  // sequence and only opens up once the real site (Title Screen) is
+  // actually on screen - never during the cutscene or the download/
+  // preload step.
+  useEffect(() => {
+    setGateOpen(phase === "done");
+  }, [phase, setGateOpen]);
+
+  function goToPhase(next: Phase) {
+    pendingPhaseRef.current = next;
+    setTransitionStage("covering");
   }
 
-  // keyboard controls: Enter/Space = advance, Escape = skip
+  function handleTransitionDone() {
+    if (transitionStage === "covering") {
+      if (pendingPhaseRef.current) setPhase(pendingPhaseRef.current);
+      setTransitionStage("revealing");
+    } else if (transitionStage === "revealing") {
+      setTransitionStage("none");
+    }
+  }
+
   useEffect(() => {
-    function onKeyDown(e: KeyboardEvent) {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        handleAdvance();
-      } else if (e.key === "Escape") {
-        onComplete();
+    if (phase !== "loading") return;
+
+    let cancelled = false;
+    let loadedCount = 0;
+    const total = ASSETS_TO_PRELOAD.length;
+    const startedAt = Date.now();
+
+    function finishAfterMinimum() {
+      const elapsed = Date.now() - startedAt;
+      const remaining = MIN_LOADING_MS - elapsed;
+      if (remaining <= 0) {
+        goToPhase("done");
+        return;
       }
+      setTimeout(() => {
+        if (!cancelled) goToPhase("done");
+      }, remaining);
     }
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.stepIndex, state.charIndex]);
+
+    ASSETS_TO_PRELOAD.forEach((url) => {
+      fetch(url)
+        .then((res) => res.blob())
+        .catch(() => {
+          // One missing/failed asset shouldn't strand the transition -
+          // count it as "done" and move on.
+        })
+        .finally(() => {
+          if (cancelled) return;
+          loadedCount += 1;
+          setProgress(Math.round((loadedCount / total) * 100));
+          if (loadedCount === total) {
+            finishAfterMinimum();
+          }
+        });
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [phase]);
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex cursor-pointer flex-col items-center justify-end overflow-hidden bg-black"
-      onClick={handleAdvance}
-    >
-      <video
-        className="absolute inset-0 h-full w-full object-cover"
-        src="/videos/space-apartment-bg-loop.mp4"
-        autoPlay
-        loop
-        muted
-        playsInline
-      />
+    <>
+      {phase === "greeting" && (
+        <BootGreeting onComplete={() => goToPhase("loading")} />
+      )}
+      {phase === "loading" && <LoadingScreen progress={progress} />}
 
-      <button
-        type="button"
-        onClick={(e) => {
-          e.stopPropagation();
-          onComplete();
-        }}
-        className="font-pixel absolute right-6 top-6 z-10 rounded px-3 py-2 text-[10px] text-white/60 outline-none transition-colors hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-white/60"
-      >
-        SKIP &gt;&gt;
-      </button>
-
-      <div className="relative z-10 flex w-full max-w-xl flex-col items-center px-6 pb-12">
-        <div className="relative -mb-8 w-56 sm:w-64">
-          <Image
-            key={step.id}
-            src={step.pose}
-            alt=""
-            width={1034}
-            height={946}
-            sizes="(min-width: 640px) 256px, 224px"
-            style={{ height: "auto" }}
-            className="w-full [image-rendering:pixelated]"
-            priority
-          />
-        </div>
-
-        <div
-          className="relative flex w-full max-w-[26rem] items-start justify-center bg-contain bg-center bg-no-repeat px-10 py-9"
-          style={{
-            backgroundImage: "url(/images/dialogue-textbox.png)",
-            aspectRatio: "1657 / 710",
-          }}
-        >
-          <p className="font-dialogue min-h-[3lh] w-full text-center text-xl leading-relaxed text-white sm:text-2xl">
-            {step.text.slice(0, state.charIndex)}
-          </p>
-        </div>
-      </div>
-    </div>
+      {transitionStage !== "none" && (
+        <PixelTransition
+          key={transitionStage}
+          mode={transitionStage === "covering" ? "cover" : "reveal"}
+          onDone={handleTransitionDone}
+        />
+      )}
+    </>
   );
 }
