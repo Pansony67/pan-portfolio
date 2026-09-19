@@ -221,7 +221,7 @@ export default function BootGreeting({
           e.stopPropagation();
           onComplete();
         }}
-        className="font-pixel absolute right-6 top-6 z-20 rounded px-3 py-2 text-[10px] text-white/60 outline-none transition-colors hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-white/60"
+        className="font-pixel absolute right-6 top-6 z-20 min-h-10 rounded px-3 py-2 text-[10px] text-white/60 outline-none transition-colors hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-white/60 sm:min-h-auto"
       >
         {t.skip}
       </button>
@@ -246,14 +246,23 @@ export default function BootGreeting({
             />
           </div>
 
+          {/* Phone sizing (below sm): the box takes the full content
+              width so the 1627/680 frame art is as tall as it can be
+              (142.9px at 390px wide), and the text is small enough that
+              3 lines (min-h-[3lh]) fit INSIDE that art with the py-6
+              padding - previously the text forced the box taller than
+              the art, leaving bare #1a1530 slabs above and below the
+              frame. sm: restores the original 80% / px-7 py-9 / text-4xl
+              desktop values exactly. .dialogue-line is the hook for the
+              phone-only Thai size guard in globals.css. */}
           <div
-            className="relative flex w-[80%] items-start justify-center bg-contain bg-center bg-no-repeat bg-[#1a1530] px-7 py-9"
+            className="relative flex w-full items-center justify-center bg-contain bg-center bg-no-repeat bg-[#1a1530] px-5 py-6 sm:w-[80%] sm:items-start sm:px-7 sm:py-9"
             style={{
               backgroundImage: "url(/images/dialogue-textbox.png)",
               aspectRatio: "1627 / 680",
             }}
           >
-            <p className="font-dialogue min-h-[3lh] w-full text-center text-xl leading-relaxed text-white sm:text-4xl">
+            <p className="font-dialogue dialogue-line min-h-[3lh] w-full text-center text-[15px] leading-snug text-white sm:text-4xl sm:leading-relaxed">
               {step.text.slice(0, state.charIndex)}
             </p>
           </div>

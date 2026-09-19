@@ -1,5 +1,5 @@
 // src/app/layout.tsx
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Chakra_Petch, Geist, Geist_Mono, Press_Start_2P, VT323 } from "next/font/google";
 import Nav from "@/components/Nav";
 import MusicProvider from "@/components/MusicProvider";
@@ -48,6 +48,16 @@ export const metadata: Metadata = {
   title: "Pan | The Marketing Student Who Codes",
   description:
     "Marketing x Dev hybrid portfolio, presented as a pixel-art space RPG.",
+};
+
+// Explicit viewport so phones lay the page out at device width instead
+// of a zoomed-out desktop canvas. No maximumScale / userScalable on
+// purpose - blocking pinch-zoom is an accessibility failure. themeColor
+// tints the browser chrome to the site's dark UI color on mobile.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#0d0b1a",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

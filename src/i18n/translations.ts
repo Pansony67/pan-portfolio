@@ -34,6 +34,11 @@ export const translations = {
       muteOff: "Unmute background music",
       switchToThai: "Switch site language to Thai",
       switchToEnglish: "Switch site language to English",
+      menu: "MENU",
+      openMenu: "Open menu",
+      closeMenu: "Close menu",
+      selectLevel: "SELECT A LEVEL",
+      tapToClose: "tap anywhere to close",
     },
     bootGreeting: {
       dialogue: {
@@ -185,6 +190,11 @@ export const translations = {
       muteOff: "เปิดเสียงเพลงพื้นหลัง",
       switchToThai: "เปลี่ยนภาษาเว็บเป็นภาษาไทย",
       switchToEnglish: "เปลี่ยนภาษาเว็บเป็นภาษาอังกฤษ",
+      menu: "เมนู",
+      openMenu: "เปิดเมนู",
+      closeMenu: "ปิดเมนู",
+      selectLevel: "เลือกด่าน",
+      tapToClose: "แตะที่ใดก็ได้เพื่อปิด",
     },
     bootGreeting: {
       dialogue: {

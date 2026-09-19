@@ -309,15 +309,18 @@ body {
    utility actually used in the app (checked via grep) and bumps each
    one by roughly +10%, scoped to Thai only.
 
-   This intentionally does not re-wrap the sm:/lg: variants in their
-   matching @media breakpoints - it applies the same bumped size at
-   every width. For a "make it a bit bigger" nudge on small pixel-art
-   UI labels the difference is not noticeable, and it keeps this block
-   simple instead of hand-duplicating Tailwind's breakpoint queries.
-   Only font-size changes here - none of this touches spacing/padding,
-   so layout stays exactly as tuned. Unlayered, same as the block above,
-   so it wins over the generated Tailwind utilities regardless of
-   source order. */
+   The sm:/lg: variants ARE scoped to their matching Tailwind breakpoints
+   below (min-width 640px / 1024px). They used to sit unscoped next to
+   the base rules, which was harmless while only desktop was in scope,
+   but at phone width an unscoped `[data-lang="th"] .sm\:text-4xl` beats
+   `[data-lang="th"] .text-2xl` on source order, so every
+   `text-2xl sm:text-4xl` heading rendered at its DESKTOP size on a
+   390px phone in Thai. Below 640px Thai now falls back to the (still
+   bumped) base sizes, exactly like English does. At 640px and up
+   nothing changed. Only font-size changes here - none of this touches
+   spacing/padding, so layout stays exactly as tuned. Unlayered, same as
+   the block above, so it wins over the generated Tailwind utilities
+   regardless of source order. */
 [data-lang="th"] .text-\[7px\] { font-size: 8px; }
 [data-lang="th"] .text-\[8px\] { font-size: 9px; }
 [data-lang="th"] .text-\[9px\] { font-size: 10px; }
@@ -326,27 +329,53 @@ body {
 [data-lang="th"] .text-\[12px\] { font-size: 13px; }
 [data-lang="th"] .text-\[13px\] { font-size: 14px; }
 [data-lang="th"] .text-\[15px\] { font-size: 16px; }
-[data-lang="th"] .sm\:text-\[9px\],
-[data-lang="th"] .sm\:text-\[10px\],
-[data-lang="th"] .sm\:text-\[13px\] { font-size: 11px; }
 
-[data-lang="th"] .text-xs,
-[data-lang="th"] .sm\:text-xs { font-size: 0.85rem; }
-[data-lang="th"] .text-sm,
-[data-lang="th"] .sm\:text-sm { font-size: 0.95rem; }
-[data-lang="th"] .text-base,
-[data-lang="th"] .sm\:text-base { font-size: 1.1rem; }
-[data-lang="th"] .text-lg,
-[data-lang="th"] .sm\:text-lg { font-size: 1.25rem; }
-[data-lang="th"] .text-xl,
-[data-lang="th"] .sm\:text-xl { font-size: 1.35rem; }
-[data-lang="th"] .text-2xl,
-[data-lang="th"] .sm\:text-2xl { font-size: 1.65rem; }
-[data-lang="th"] .text-3xl,
-[data-lang="th"] .sm\:text-3xl { font-size: 2.05rem; }
-[data-lang="th"] .text-4xl,
-[data-lang="th"] .sm\:text-4xl { font-size: 2.45rem; }
-[data-lang="th"] .text-5xl,
-[data-lang="th"] .sm\:text-5xl,
-[data-lang="th"] .lg\:text-5xl { font-size: 3.25rem; }
-[data-lang="th"] .lg\:text-7xl { font-size: 4.85rem; }
+[data-lang="th"] .text-xs { font-size: 0.85rem; }
+[data-lang="th"] .text-sm { font-size: 0.95rem; }
+[data-lang="th"] .text-base { font-size: 1.1rem; }
+[data-lang="th"] .text-lg { font-size: 1.25rem; }
+[data-lang="th"] .text-xl { font-size: 1.35rem; }
+[data-lang="th"] .text-2xl { font-size: 1.65rem; }
+[data-lang="th"] .text-3xl { font-size: 2.05rem; }
+[data-lang="th"] .text-4xl { font-size: 2.45rem; }
+[data-lang="th"] .text-5xl { font-size: 3.25rem; }
+
+/* sm: variants - same bumped values, now only from Tailwind's sm
+   breakpoint up, matching the utilities they override. */
+@media (min-width: 640px) {
+  [data-lang="th"] .sm\:text-\[9px\],
+  [data-lang="th"] .sm\:text-\[10px\],
+  [data-lang="th"] .sm\:text-\[13px\] { font-size: 11px; }
+
+  [data-lang="th"] .sm\:text-xs { font-size: 0.85rem; }
+  [data-lang="th"] .sm\:text-sm { font-size: 0.95rem; }
+  [data-lang="th"] .sm\:text-base { font-size: 1.1rem; }
+  [data-lang="th"] .sm\:text-lg { font-size: 1.25rem; }
+  [data-lang="th"] .sm\:text-xl { font-size: 1.35rem; }
+  [data-lang="th"] .sm\:text-2xl { font-size: 1.65rem; }
+  [data-lang="th"] .sm\:text-3xl { font-size: 2.05rem; }
+  [data-lang="th"] .sm\:text-4xl { font-size: 2.45rem; }
+  [data-lang="th"] .sm\:text-5xl { font-size: 3.25rem; }
+}
+
+/* lg: variants - same idea, from Tailwind's lg breakpoint up. */
+@media (min-width: 1024px) {
+  [data-lang="th"] .lg\:text-5xl { font-size: 3.25rem; }
+  [data-lang="th"] .lg\:text-7xl { font-size: 4.85rem; }
+}
+
+/* Phone-only guard for the BootGreeting dialogue line. The dialogue box
+   art has a fixed aspect ratio, so its text must never exceed what fits
+   inside the frame at phone width - in Thai the .text-[15px] bump above
+   already lands on 16px; this pins the line-height too so 3 lines stay
+   inside the art. Part of the Thai size system above (see CLAUDE.md). */
+@media (max-width: 639.98px) {
+  [data-lang="th"] .dialogue-line { font-size: 1rem; line-height: 1.375; }
+}
+
+/* Narrow phones (iPhone SE / mini, 360-375px): the longest Thai line wraps
+   to 4 lines at 16px, which is 5.6px taller than the 130px frame art.
+   15px / 1.35 brings 4 lines back inside it (81px + 48px padding = 129px). */
+@media (max-width: 374.98px) {
+  [data-lang="th"] .dialogue-line { font-size: 0.9375rem; line-height: 1.35; }
+}

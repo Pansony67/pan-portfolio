@@ -276,7 +276,7 @@ export default function About() {
             <button
               type="button"
               onClick={() => setShowReal((prev) => !prev)}
-              className="font-pixel border-2 border-[#3d3550] bg-[#0a0a0c]/60 px-4 py-2.5 text-[9px] tracking-widest text-[#f2ead9] shadow-[3px_3px_0_0_#0a0a0c] transition-all duration-100 hover:translate-x-[2px] hover:translate-y-[2px] hover:border-[#6b5bd6] hover:shadow-[1px_1px_0_0_#0a0a0c] sm:text-xs"
+              className="font-pixel min-h-10 border-2 border-[#3d3550] bg-[#0a0a0c]/60 px-4 py-2.5 text-[9px] tracking-widest text-[#f2ead9] shadow-[3px_3px_0_0_#0a0a0c] transition-all duration-100 hover:translate-x-[2px] hover:translate-y-[2px] hover:border-[#6b5bd6] hover:shadow-[1px_1px_0_0_#0a0a0c] sm:min-h-auto sm:text-xs"
             >
               {showReal ? t.switchToPixel : t.switchToReal}
             </button>

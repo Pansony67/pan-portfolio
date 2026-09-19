@@ -14,12 +14,19 @@ const TITLE_SIZE = "text-2xl sm:text-4xl lg:text-5xl";
 const CONTENT_TOP = "34%";
 const SCANLINE_OPACITY = "opacity-20";
 
+/* Section height = small viewport height minus the MEASURED nav height
+   (see CLAUDE.md, "Nav heights"): 48px for the phone HUD bar, 70px for
+   the desktop bar at 1440px. svh, not vh/dvh: svh is the viewport with
+   iOS Safari's URL bar showing, so PRESS START can never be clipped, and
+   unlike dvh it does not resize (and jitter the video) as that bar
+   hides/shows. If the nav height changes, change these two numbers. */
+
 export default function TitleScreen() {
   const { lang } = useLanguage();
   const t = translations[lang].titleScreen;
 
   return (
-    <section className="relative h-[calc(100vh-57px)] w-full overflow-hidden bg-[#0d0b1a]">
+    <section className="relative h-[calc(100svh-48px)] w-full overflow-hidden bg-[#0d0b1a] sm:h-[calc(100svh-70px)]">
       <video
         className="absolute inset-0 h-full w-full object-cover"
         src="/videos/title-screen-bg-loop.mp4"

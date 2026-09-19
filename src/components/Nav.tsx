@@ -3,6 +3,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useMusic } from "@/components/MusicProvider";
 import { useLanguage } from "@/i18n/LanguageProvider";
 import { translations } from "@/i18n/translations";
@@ -12,6 +13,40 @@ export default function Nav() {
   const { muted, toggleMuted } = useMusic();
   const { lang, toggleLang } = useLanguage();
   const t = translations[lang].nav;
+
+  // Phone pause-menu state. Stored as "the pathname the menu was opened
+  // on" rather than a plain boolean: the menu counts as open only while
+  // the current pathname still matches, so a client-side navigation (link
+  // tap, browser back/forward) closes it automatically with no effect and
+  // no setState-in-effect. Desktop never renders the menu.
+  const [menuOpenedOn, setMenuOpenedOn] = useState<string | null>(null);
+  const menuOpen = menuOpenedOn === pathname;
+
+  function openMenu() {
+    setMenuOpenedOn(pathname);
+  }
+
+  function closeMenu() {
+    setMenuOpenedOn(null);
+  }
+
+  // While the pause menu is up: lock body scroll (restoring whatever value
+  // was there before, not blindly ""), and let Escape close it.
+  useEffect(() => {
+    if (!menuOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") setMenuOpenedOn(null);
+    }
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [menuOpen]);
 
   const links = [
     { href: "/", label: t.titleScreen },
@@ -33,7 +68,140 @@ export default function Nav() {
 
   return (
     <>
-      <div className="border-b-2 border-[#3d3550] bg-[#0d0b1a]">
+      {/* ---------------------------------------------------------------
+          PHONE (below sm / 640px): pause-menu overlay + HUD bar.
+
+          The overlay is rendered BEFORE the bar on purpose - both sit at
+          z-50 while the menu is open, so DOM order is what keeps the bar
+          (and its MENU / TH / mute buttons) clickable on top of the
+          backdrop. The overlay pads its content down by the bar height
+          (pt-12 = h-12) so the list starts under the bar, not behind it.
+          Tapping anywhere on the overlay closes it; link taps bubble up
+          to the same handler and the route change closes it as well. */}
+      {menuOpen && (
+        <div
+          id="phone-menu"
+          className="fixed inset-0 z-50 flex flex-col bg-[#0d0b1a]/97 pt-12 sm:hidden"
+          onClick={closeMenu}
+        >
+          <div className="flex flex-1 flex-col overflow-y-auto px-4 pb-8 pt-8">
+            <p className="font-pixel text-[9px] tracking-[0.4em] text-[#c9bdff]">
+              &#9656; {t.selectLevel}
+            </p>
+
+            <nav className="mt-5 flex flex-col gap-3">
+              {links.map((link) => {
+                const isActive = pathname === link.href;
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    aria-current={isActive ? "page" : undefined}
+                    className={`font-pixel flex w-full items-center border-2 px-4 py-3.5 text-xs tracking-wide outline-none transition-colors ${
+                      isActive
+                        ? "border-[#f2ead9] bg-[#6b5bd6]/30 text-[#f2ead9] shadow-[3px_3px_0_rgba(45,20,95,0.7)]"
+                        : "border-white/15 text-[#f2ead9]/55 hover:border-[#6b5bd6] hover:text-[#f2ead9] hover:bg-white/5"
+                    } focus-visible:ring-2 focus-visible:ring-[#f2ead9] active:translate-y-[1px] active:shadow-none`}
+                  >
+                    <span className={isActive ? "mr-1 opacity-100" : "mr-1 opacity-0"}>
+                      &#9656;
+                    </span>
+                    {link.label}
+                  </Link>
+                );
+              })}
+            </nav>
+
+            <p className="font-dialogue mt-auto border-t-2 border-[#3d3550] pt-6 text-center text-sm text-[#f2ead9]/40">
+              {t.tapToClose}
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Phone HUD bar. Sticky rather than fixed: it stays in normal flow
+          (no page needs new top padding) and still follows the reader
+          down the page. Stays at z-50 while the menu is open so it paints
+          above the overlay backdrop. The TH / mute buttons reuse
+          controlButtonClass verbatim - same neon-pink boxes as the
+          desktop floating cluster, just 40px tall for touch. */}
+      <div
+        className={`sticky top-0 flex h-12 items-center justify-between border-b-2 border-[#3d3550] bg-[#0d0b1a] px-4 sm:hidden ${
+          menuOpen ? "z-50" : "z-40"
+        }`}
+      >
+        <Link
+          href="/"
+          className="font-pixel flex h-10 items-center text-[10px] tracking-[0.2em] text-[#f2ead9] outline-none focus-visible:ring-2 focus-visible:ring-[#f2ead9]"
+        >
+          PAN DEV
+        </Link>
+
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={toggleLang}
+            aria-label={lang === "en" ? t.switchToThai : t.switchToEnglish}
+            title={lang === "en" ? t.switchToThai : t.switchToEnglish}
+            className={`font-pixel h-10 min-w-10 px-2.5 text-[9px] tracking-widest ${controlButtonClass}`}
+          >
+            {lang === "en" ? "TH" : "EN"}
+          </button>
+
+          <button
+            type="button"
+            onClick={toggleMuted}
+            aria-label={muted ? t.muteOff : t.muteOn}
+            aria-pressed={muted}
+            title={muted ? t.muteOff : t.muteOn}
+            className={`h-10 w-10 ${controlButtonClass}`}
+          >
+            {muted ? (
+              <svg
+                viewBox="0 0 16 16"
+                className="h-3.5 w-3.5"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path d="M1 6h3l4-3v10l-4-3H1z" />
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M10.6 5.4l1.4 1.4-1.4 1.4.7.7L12.7 7.5l1.4 1.4.7-.7-1.4-1.4 1.4-1.4-.7-.7-1.4 1.4-1.4-1.4z"
+                />
+              </svg>
+            ) : (
+              <svg
+                viewBox="0 0 16 16"
+                className="h-3.5 w-3.5"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path d="M1 6h3l4-3v10l-4-3H1z" />
+                <path d="M10.5 5.2a3 3 0 010 5.6v-1.1a2 2 0 000-3.4V5.2z" />
+                <path d="M10.5 3.2a5 5 0 010 9.6v-1.1a4 4 0 000-7.4V3.2z" />
+              </svg>
+            )}
+          </button>
+
+          <button
+            type="button"
+            onClick={menuOpen ? closeMenu : openMenu}
+            aria-expanded={menuOpen}
+            aria-controls="phone-menu"
+            aria-label={menuOpen ? t.closeMenu : t.openMenu}
+            className="font-pixel flex h-10 min-w-10 items-center justify-center border-2 border-[#f2ead9] bg-[#6b5bd6]/30 px-3 text-[9px] tracking-widest text-[#f2ead9] shadow-[3px_3px_0_rgba(45,20,95,0.7)] outline-none transition-colors focus-visible:ring-2 focus-visible:ring-[#f2ead9] active:translate-y-[1px] active:shadow-none"
+          >
+            {t.menu}
+          </button>
+        </div>
+      </div>
+
+      {/* ---------------------------------------------------------------
+          DESKTOP (sm / 640px and up): unchanged from before the phone
+          pass - only the display gates (hidden sm:block / hidden sm:flex)
+          were added. */}
+      <div className="hidden border-b-2 border-[#3d3550] bg-[#0d0b1a] sm:block">
         {/* Page links only. The language/mute controls used to live in
             a second row here (a bordered black strip under this nav),
             but that took up header space and scrolled out of view with
@@ -69,7 +237,9 @@ export default function Nav() {
           wrapper is purely for position/stacking - no background or
           border of its own - each button keeps its own independent
           neon-pink box. */}
-      <div className="fixed right-4 top-4 z-40 flex flex-col gap-3">
+      {/* Desktop only - on phones these two controls live in the HUD bar
+          above instead (hidden sm:flex). */}
+      <div className="fixed right-4 top-4 z-40 hidden flex-col gap-3 sm:flex">
         <button
           type="button"
           onClick={toggleLang}
