@@ -108,6 +108,11 @@ const categories: QuestCategory[] = [
     icon: "check",
     quests: [
       {
+        name: "Google Analytics 4 (GA4) Certification",
+        note: "Google Skillshop",
+        status: "COMPLETE",
+      },
+      {
         name: "Google Data Analytics Professional Certificate",
         note: "Coursera",
         status: "COMPLETE",
@@ -129,11 +134,6 @@ const categories: QuestCategory[] = [
     accentColor: "#ffbd36",
     icon: "clock",
     quests: [
-      {
-        name: "Google Analytics 4 (GA4) Certification",
-        note: "Exam planned",
-        status: "PLANNED",
-      },
       {
         name: "Google Advanced Data Analytics Certificate",
         note: "Not started",
