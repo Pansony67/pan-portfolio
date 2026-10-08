@@ -129,6 +129,7 @@ export const translations = {
       descriptions: {
         "Lofi Calculator": "Lofi-themed calculator with a currency converter",
         "ALLAround-GDP": "3D globe GDP visualizer",
+        Melonality: "Watermelon personality quiz - 20 questions, 20 types",
         "Wally the Wallet": "Personal finance tracker - still in the vault.",
       },
     },
@@ -285,6 +286,8 @@ export const translations = {
       descriptions: {
         "Lofi Calculator": "เครื่องคิดเลขธีม Lofi พร้อมตัวแปลงสกุลเงิน",
         "ALLAround-GDP": "แอปแสดงข้อมูล GDP บนลูกโลก 3 มิติ",
+        Melonality:
+          "แบบทดสอบบุคลิกภาพธีมแตงโม 20 ข้อ 20 ผลลัพธ์",
         "Wally the Wallet": "แอปติดตามการเงินส่วนตัว - ยังอยู่ในตู้เซฟ",
       },
     },

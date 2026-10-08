@@ -9,12 +9,13 @@ import { translations } from "@/i18n/translations";
 /* Level Select / Projects page - same row pattern as Graduation: full-
    width rows with a pixel-art background image, gradient overlay for
    text contrast, scanline, and a status badge. Order per Pan: Lofi
-   Calculator, then ALLAround-GDP, then Wally the Wallet last (locked,
+   Calculator, then ALLAround-GDP, then Melonality, with Wally the
+   Wallet last (locked,
    no background scene yet - that's a separate future step, plain dark
    plate with the padlock icon as a watermark for now).
 
    Each project's type label gets its own accent color instead of the
-   site's default violet, so the three rows read as distinct at a
+   site's default violet, so the four rows read as distinct at a
    glance - Wally's stays a flat gray on purpose, since it's not live
    yet (color = available, gray = not).
 
@@ -24,7 +25,11 @@ import { translations } from "@/i18n/translations";
 type Project = {
   type: string;
   accentColor: string;
-  name: "Lofi Calculator" | "ALLAround-GDP" | "Wally the Wallet";
+  name:
+    | "Lofi Calculator"
+    | "ALLAround-GDP"
+    | "Melonality"
+    | "Wally the Wallet";
   bgImage: string | null;
   href: string | null;
   status: "LIVE" | "LOCKED";
@@ -49,6 +54,14 @@ const projects: Project[] = [
   },
   {
     type: "PROJECT_03",
+    accentColor: "#ff6b81",
+    name: "Melonality",
+    bgImage: "/images/melonality-pixel.png",
+    href: "https://watermelon-mbti.vercel.app/",
+    status: "LIVE",
+  },
+  {
+    type: "PROJECT_04",
     accentColor: "#9ca3af",
     name: "Wally the Wallet",
     bgImage: "/images/wally-vault-pixel.png",
