@@ -8,7 +8,7 @@ import PixelBrandIcon from "@/components/PixelBrandIcon";
 /* A pixel-framed card wrapping a real, genuinely-rasterized brand icon
    (see PixelBrandIcon.tsx), with the platform name printed underneath.
    Corner brackets are always visible here (unlike the hover-only ones
-   elsewhere) so the three cards read as a matched set even at rest.
+   elsewhere) so the cards read as a matched set even at rest.
 
    The handle appears in a hover box above the card - a game-style item
    tooltip - so the resting state stays clean but the actual username is
@@ -25,7 +25,7 @@ export default function IconLink({
   label,
   handle,
 }: {
-  name: "github" | "instagram" | "linkedin";
+  name: "github" | "instagram" | "linkedin" | "email";
   href: string;
   label: string;
   handle: string;

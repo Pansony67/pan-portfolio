@@ -5,7 +5,8 @@ import { useEffect, useRef } from "react";
 
 /* Renders a real brand icon (official SVG path, sourced from react-icons -
    GitHub and Instagram from "si", LinkedIn from "fa6" since simple-icons
-   doesn't ship a LinkedIn glyph) genuinely pixelated: the path is drawn
+   doesn't ship a LinkedIn glyph, the email envelope from "fa6" too)
+   genuinely pixelated: the path is drawn
    onto a small offscreen canvas (RESOLUTION px), then that canvas is
    displayed scaled up via CSS with image-rendering: pixelated. This is
    real rasterization, not an AI redraw - the shape stays official, only
@@ -16,7 +17,7 @@ import { useEffect, useRef } from "react";
    RESOLUTION - how chunky the pixelation reads (lower = blockier) */
 const RESOLUTION = 20;
 
-type BrandIconName = "github" | "instagram" | "linkedin";
+type BrandIconName = "github" | "instagram" | "linkedin" | "email";
 
 const ICONS: Record<
   BrandIconName,
@@ -33,6 +34,10 @@ const ICONS: Record<
   linkedin: {
     viewBox: "0 0 448 512",
     path: "M100.28 448H7.4V148.9h92.88zM53.79 108.1C24.09 108.1 0 83.5 0 53.8a53.79 53.79 0 0 1 107.58 0c0 29.7-24.1 54.3-53.79 54.3zM447.9 448h-92.68V302.4c0-34.7-.7-79.2-48.29-79.2-48.29 0-55.69 37.7-55.69 76.7V448h-92.78V148.9h89.08v40.8h1.3c12.4-23.5 42.69-48.3 87.88-48.3 94 0 111.28 61.9 111.28 142.3V448z",
+  },
+  email: {
+    viewBox: "0 0 512 512",
+    path: "M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48L48 64zM0 176L0 384c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-208L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z",
   },
 };
 

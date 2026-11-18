@@ -9,7 +9,7 @@ import { translations } from "@/i18n/translations";
 
 /* Save & Continue / Contact page, built to the mockup: everything sits
    inside an ornate bracketed frame, with the heading, an ornament
-   divider, a speech-bubble callout, the three channel cards, and a
+   divider, a speech-bubble callout, the four channel cards, and a
    footer save-file line. Background is the citadel loop - PixelFrame's
    own interior has no fill, so the video shows through the open areas
    between cards, same idea as the reference image's deliberately empty
@@ -32,6 +32,12 @@ const channels = [
     href: "https://www.instagram.com/pancantalk/?theme=dark",
     label: "INSTAGRAM",
     handle: "pancantalk",
+  },
+  {
+    name: "email" as const,
+    href: "mailto:pansony67@gmail.com",
+    label: "EMAIL",
+    handle: "pansony67@gmail.com",
   },
 ];
 
