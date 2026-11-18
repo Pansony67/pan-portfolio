@@ -109,7 +109,7 @@ const categories: QuestCategory[] = [
     quests: [
       {
         name: "Google Analytics 4 (GA4) Certification",
-        note: "Google Skillshop",
+        note: "Google Skillshop, passed September 2026",
         status: "COMPLETE",
       },
       {
@@ -141,7 +141,6 @@ const categories: QuestCategory[] = [
       },
       {
         name: "Gemini Certification",
-        note: "Expected late this year",
         status: "PLANNED",
       },
     ],

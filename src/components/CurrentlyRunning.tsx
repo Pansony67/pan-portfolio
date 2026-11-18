@@ -32,10 +32,19 @@ const processes: Process[] = [
   {
     id: "lofi-calculator",
     name: "LOFI_CALCULATOR.exe",
-    description: "Lofi calculator with a currency converter",
+    description:
+      "Financial calculator for NPV, IRR and time value of money, with live charts.",
     status: "LIVE",
     isLive: true,
     href: "https://lofi-calculator.vercel.app/",
+  },
+  {
+    id: "melonality",
+    name: "MELONALITY.exe",
+    description: "Watermelon personality quiz - 20 questions, 20 types",
+    status: "LIVE",
+    isLive: true,
+    href: "https://watermelon-mbti.vercel.app/",
   },
   {
     id: "portfolio-site",

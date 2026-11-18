@@ -68,7 +68,9 @@ export const translations = {
         "Marketing student at Bangkok University, self-teaching full-stack dev on the side. Not choosing between business and code - building the bridge between them.",
       currentlyRunningDescriptions: {
         "allaround-gdp": "3D globe GDP visualizer",
-        "lofi-calculator": "Lofi calculator with a currency converter",
+        "lofi-calculator":
+          "Financial calculator for NPV, IRR and time value of money, with live charts.",
+        melonality: "Watermelon personality quiz - 20 questions, 20 types",
         "portfolio-site": "This site - pixel art RPG portfolio",
       },
       districtMap: {
@@ -103,13 +105,11 @@ export const translations = {
       },
       profileLabels: {
         NAME: "NAME",
-        BORN: "BORN",
         INTERESTS: "INTERESTS",
         HOBBIES: "HOBBIES",
       },
       profileValues: {
         NAME: "Pannadhorn Rugseree",
-        BORN: "6 July 2005",
         INTERESTS:
           "Marketing Analyst, Data Analyst, Marketing Management, and more",
         HOBBIES: "Swimming, upskill learning, playing video games",
@@ -127,7 +127,8 @@ export const translations = {
     projects: {
       heading: "PROJECTS",
       descriptions: {
-        "Lofi Calculator": "Lofi-themed calculator with a currency converter",
+        "Lofi Calculator":
+          "Financial calculator for NPV, IRR and time value of money, with live charts.",
         "ALLAround-GDP": "3D globe GDP visualizer",
         Melonality: "Watermelon personality quiz - 20 questions, 20 types",
         "Wally the Wallet": "Personal finance tracker - still in the vault.",
@@ -154,9 +155,9 @@ export const translations = {
         Coursera: "Coursera",
         "Certificate recovered": "Certificate recovered",
         "Exam planned": "Exam planned",
-        "Google Skillshop": "Google Skillshop",
+        "Google Skillshop, passed September 2026":
+          "Google Skillshop, passed September 2026",
         "Not started": "Not started",
-        "Expected late this year": "Expected late this year",
         "2025": "2025",
         "Vanderbilt University, via Coursera":
           "Vanderbilt University, via Coursera",
@@ -226,7 +227,9 @@ export const translations = {
         "นักศึกษาการตลาดที่มหาวิทยาลัยกรุงเทพ ที่สอนตัวเองเขียนโค้ด full-stack ไปด้วย ไม่ได้เลือกระหว่างสายธุรกิจกับสายโค้ด แต่กำลังสร้างสะพานเชื่อมทั้งสองฝั่ง",
       currentlyRunningDescriptions: {
         "allaround-gdp": "แอปแสดงข้อมูล GDP บนลูกโลก 3 มิติ",
-        "lofi-calculator": "เครื่องคิดเลขสไตล์ Lofi พร้อมตัวแปลงสกุลเงิน",
+        "lofi-calculator":
+          "เครื่องคิดเลขการเงินสำหรับ NPV, IRR และมูลค่าเงินตามเวลา พร้อมกราฟแบบเรียลไทม์",
+        melonality: "แบบทดสอบบุคลิกภาพธีมแตงโม 20 ข้อ 20 ผลลัพธ์",
         "portfolio-site": "เว็บนี้แหละ พอร์ตโฟลิโอสไตล์ RPG พิกเซลอาร์ต",
       },
       districtMap: {
@@ -261,13 +264,11 @@ export const translations = {
       },
       profileLabels: {
         NAME: "ชื่อ",
-        BORN: "เกิด",
         INTERESTS: "ความสนใจ",
         HOBBIES: "งานอดิเรก",
       },
       profileValues: {
         NAME: "Pannadhorn Rugseree",
-        BORN: "6 กรกฎาคม 2005",
         INTERESTS: "นักวิเคราะห์การตลาด, นักวิเคราะห์ข้อมูล, การจัดการการตลาด และอื่น ๆ",
         HOBBIES: "ว่ายน้ำ, เรียนรู้เพิ่มทักษะ, เล่นวิดีโอเกม",
       },
@@ -284,7 +285,8 @@ export const translations = {
     projects: {
       heading: "โปรเจกต์",
       descriptions: {
-        "Lofi Calculator": "เครื่องคิดเลขธีม Lofi พร้อมตัวแปลงสกุลเงิน",
+        "Lofi Calculator":
+          "เครื่องคิดเลขการเงินสำหรับ NPV, IRR และมูลค่าเงินตามเวลา พร้อมกราฟแบบเรียลไทม์",
         "ALLAround-GDP": "แอปแสดงข้อมูล GDP บนลูกโลก 3 มิติ",
         Melonality:
           "แบบทดสอบบุคลิกภาพธีมแตงโม 20 ข้อ 20 ผลลัพธ์",
@@ -312,9 +314,9 @@ export const translations = {
         Coursera: "Coursera",
         "Certificate recovered": "กู้ใบเซอร์กลับมาได้",
         "Exam planned": "วางแผนสอบไว้",
-        "Google Skillshop": "Google Skillshop",
+        "Google Skillshop, passed September 2026":
+          "Google Skillshop สอบผ่านเมื่อกันยายน 2026",
         "Not started": "ยังไม่เริ่ม",
-        "Expected late this year": "คาดว่าจะได้ปลายปีนี้",
         "2025": "2025",
         "Vanderbilt University, via Coursera": "Vanderbilt University ผ่าน Coursera",
       },

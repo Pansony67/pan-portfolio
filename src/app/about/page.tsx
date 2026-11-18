@@ -191,7 +191,13 @@ function StatsRadar({ labels }: { labels: Record<SwotItem["name"], string> }) {
 
 /* Basic character details for the PROFILE box - key order only here,
    the label/value text itself comes from translations[lang].about. */
-const PROFILE_FIELDS = ["NAME", "BORN", "INTERESTS", "HOBBIES"] as const;
+const PROFILE_FIELDS = ["NAME", "INTERESTS", "HOBBIES"] as const;
+
+/* The ORIGINAL SHEET section at the bottom is the entry point into the
+   cutscene, which is not built yet, so its button would do nothing.
+   Hidden (not rendered, so its video is not downloaded either) until
+   then - set to true once the cutscene component exists. */
+const OG_SHEET_READY = false;
 
 /* Real tool list - logos not ready yet, name-only tags for now. Kept
    English on purpose (technical terms). */
@@ -351,34 +357,36 @@ export default function About() {
           The nostalgia-realm loop plays behind it. Button click has no
           real handler yet; wire it to open the cutscene once that
           component exists. */}
-      <div className="relative flex min-h-[70vh] w-full flex-col items-center justify-center gap-8 overflow-hidden border-t-2 border-white/20 bg-[#0a0a0c] px-6 py-16 text-center">
-        <video
-          className="absolute inset-0 h-full w-full object-cover"
-          src="/videos/nostalgia-realm-bg-loop.mp4"
-          autoPlay
-          loop
-          muted
-          playsInline
-        />
+      {OG_SHEET_READY && (
+        <div className="relative flex min-h-[70vh] w-full flex-col items-center justify-center gap-8 overflow-hidden border-t-2 border-white/20 bg-[#0a0a0c] px-6 py-16 text-center">
+          <video
+            className="absolute inset-0 h-full w-full object-cover"
+            src="/videos/nostalgia-realm-bg-loop.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+          />
 
-        <div className="absolute inset-0 bg-[#0d0b1a]/55" />
+          <div className="absolute inset-0 bg-[#0d0b1a]/55" />
 
-        <div className="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(0deg,rgba(0,0,0,0.28)_0px,rgba(0,0,0,0.28)_1px,transparent_1px,transparent_3px)] opacity-60" />
+          <div className="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(0deg,rgba(0,0,0,0.28)_0px,rgba(0,0,0,0.28)_1px,transparent_1px,transparent_3px)] opacity-60" />
 
-        <p className="font-pixel relative z-10 text-[10px] tracking-widest text-[#c9bdff] [text-shadow:2px_2px_0_#0a0a0c] sm:text-xs">
-          &gt; ORIGINAL SHEET
-        </p>
+          <p className="font-pixel relative z-10 text-[10px] tracking-widest text-[#c9bdff] [text-shadow:2px_2px_0_#0a0a0c] sm:text-xs">
+            &gt; ORIGINAL SHEET
+          </p>
 
-        <button
-          type="button"
-          onClick={() => {
-            /* TODO: open the cutscene popup once that component exists */
-          }}
-          className="font-pixel relative z-10 border-2 border-[#3d3550] bg-[#1a1530]/80 px-8 py-5 text-sm tracking-widest text-[#f2ead9] shadow-[6px_6px_0_0_#0a0a0c] transition-all duration-100 hover:translate-x-[2px] hover:translate-y-[2px] hover:border-[#6b5bd6] hover:shadow-[3px_3px_0_0_#0a0a0c] sm:text-base"
-        >
-          {t.ogSheet}
-        </button>
-      </div>
+          <button
+            type="button"
+            onClick={() => {
+              /* TODO: open the cutscene popup once that component exists */
+            }}
+            className="font-pixel relative z-10 border-2 border-[#3d3550] bg-[#1a1530]/80 px-8 py-5 text-sm tracking-widest text-[#f2ead9] shadow-[6px_6px_0_0_#0a0a0c] transition-all duration-100 hover:translate-x-[2px] hover:translate-y-[2px] hover:border-[#6b5bd6] hover:shadow-[3px_3px_0_0_#0a0a0c] sm:text-base"
+          >
+            {t.ogSheet}
+          </button>
+        </div>
+      )}
     </div>
   );
 }

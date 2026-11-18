@@ -44,10 +44,50 @@ const chakraPetch = Chakra_Petch({
   subsets: ["thai", "latin"],
 });
 
+const SITE_TITLE = "Pannadhorn Rugseree (Pan) | The Marketing Student Who Codes";
+const SITE_DESCRIPTION =
+  "Portfolio of Pannadhorn Rugseree, a marketing student at Bangkok University International who builds data dashboards and web apps: ALLAround GDP, Melonality and Lofi Calculator.";
+
+// Each route folder has a small layout.tsx with its own title,
+// description and canonical (the pages themselves are client components,
+// which cannot export metadata). Those titles fill the template below.
+// Google Search Console ownership is verified by the HTML file in
+// public/ (google5452e429c74d79a4.html), not a meta tag.
 export const metadata: Metadata = {
-  title: "Pan | The Marketing Student Who Codes",
-  description:
-    "Marketing x Dev hybrid portfolio, presented as a pixel-art space RPG.",
+  metadataBase: new URL("https://pan-portfolio-two.vercel.app"),
+  title: {
+    default: SITE_TITLE,
+    template: "%s | Pannadhorn Rugseree (Pan)",
+  },
+  description: SITE_DESCRIPTION,
+  openGraph: {
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    url: "/",
+    siteName: "Pan | Portfolio",
+    type: "website",
+  },
+  twitter: { card: "summary_large_image" },
+  alternates: { canonical: "/" },
+};
+
+// schema.org Person, so search engines can tie the site to the LinkedIn
+// and GitHub profiles. "<" escaped per the Next.js JSON-LD guide.
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Pannadhorn Rugseree",
+  alternateName: "Pan",
+  url: "https://pan-portfolio-two.vercel.app",
+  jobTitle: "Marketing Student",
+  alumniOf: {
+    "@type": "CollegeOrUniversity",
+    name: "Bangkok University International",
+  },
+  sameAs: [
+    "https://www.linkedin.com/in/pannadhorn-rugseree-90a8b6403/",
+    "https://github.com/Pansony67",
+  ],
 };
 
 // Explicit viewport so phones lay the page out at device width instead
@@ -67,6 +107,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} ${pressStart.variable} ${vt323.variable} ${chakraPetch.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-black text-white">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(personJsonLd).replace(/</g, "\\u003c"),
+          }}
+        />
         <LanguageProvider>
           <MusicProvider>
             <Nav />
