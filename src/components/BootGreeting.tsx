@@ -221,7 +221,7 @@ export default function BootGreeting({
           e.stopPropagation();
           onComplete();
         }}
-        className="font-pixel absolute right-6 top-6 z-20 min-h-10 rounded px-3 py-2 text-[10px] text-white/60 outline-none transition-colors hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-white/60 sm:min-h-auto"
+        className="font-pixel absolute right-6 top-6 z-20 min-h-10 border-2 border-[#3d3550] bg-[#1a1530]/85 px-4 py-2.5 text-[10px] tracking-widest text-[#f2ead9] shadow-[3px_3px_0_0_#0a0a0c] outline-none transition-all duration-100 hover:translate-x-[2px] hover:translate-y-[2px] hover:border-[#6b5bd6] hover:bg-[#1a1530] hover:shadow-[1px_1px_0_0_#0a0a0c] focus-visible:translate-x-[2px] focus-visible:translate-y-[2px] focus-visible:border-[#6b5bd6] focus-visible:shadow-[1px_1px_0_0_#0a0a0c] sm:min-h-auto"
       >
         {t.skip}
       </button>
